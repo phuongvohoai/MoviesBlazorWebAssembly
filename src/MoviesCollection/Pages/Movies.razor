@@ -1,0 +1,36 @@
+﻿@page "/movies"
+@using MoviesCollection.Models
+@using MoviesCollection.Components
+
+@inject HttpClient Http
+
+
+<div class="movie-container">
+    @if (movies == null)
+    {
+        <div>Loading...</div>
+    }
+    else
+    {
+        @foreach (var movie in movies.results)
+        {
+            <MovieDetail Movie="@movie" />
+        }
+    }
+</div>
+
+@code {
+
+    const string apiUrl = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=a2d7bda638c91a70ad69de2f79a5a2f3&page=1";
+    const string IMGPATH = "https://image.tmdb.org/t/p/w1280";
+    const string SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=a2d7bda638c91a70ad69de2f79a5a2f3&query=";
+    // image.src = IMGPATH + element.poster_path;
+
+    MovieResponseModel movies = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movies =
+            await Http.GetFromJsonAsync<MovieResponseModel>(apiUrl);
+    }
+}
