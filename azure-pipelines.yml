@@ -5,8 +5,7 @@
 
 name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
-  - develop
-  - master
+  - main
 
 variables:
   BuildConfiguration: Release
