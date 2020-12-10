@@ -12,10 +12,9 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-- task: CmdLine@2
-  inputs:
-    script: 'cd src'
-
 steps:
+- script: cd src
+  displayName: 'Change directory'
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
