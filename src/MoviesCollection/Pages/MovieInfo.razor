@@ -1,0 +1,24 @@
+﻿@page "/movies/{id?}"
+@using MoviesCollection.Models
+@inject HttpClient Http
+@if (movie != null)
+{
+    <h1>Movie name is @movie.title</h1>
+}
+
+@code {
+    private MovieDetailResponseModel movie;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(this.Id))
+        {
+
+            var url = $"https://api.themoviedb.org/3/movie/{this.Id}?api_key=a2d7bda638c91a70ad69de2f79a5a2f3&language=en-US";
+            movie = await Http.GetFromJsonAsync<MovieDetailResponseModel>(url);
+        }
+    }
+}

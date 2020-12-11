@@ -1,8 +1,8 @@
 ﻿@page "/movies"
 @using MoviesCollection.Models
-@using MoviesCollection.Components
 
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 
 <div class="movie-container">
@@ -14,7 +14,7 @@
     {
         @foreach (var movie in movies.results)
         {
-            <MovieDetail Movie="@movie" />
+            <MovieDetail @key="@movie.id" Movie="@movie" OnMovieClick="@MovieClickHandler" />
         }
     }
 </div>
@@ -32,5 +32,10 @@
     {
         movies =
             await Http.GetFromJsonAsync<MovieResponseModel>(apiUrl);
+    }
+
+    private void MovieClickHandler(int videoId)
+    {
+        NavigationManager.NavigateTo($"/movies/{videoId}");
     }
 }

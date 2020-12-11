@@ -1,27 +1,20 @@
-﻿@using MoviesCollection.Models
+﻿@namespace MoviesCollection.Components
+@using MoviesCollection.Models
 
 <div class="movie-detail">
-    @*<span>@title</span>
-    <span>@description</span>
-    <button @onclick="@(() => OnClick.InvokeAsync(title))">Click me</button>*@
-    
-    <img class="movie-img" src="@MovieImageUrl"/>
-    <h2 class="movie-title">@Movie.title</h2>
+    <a @onclick="@(() => OnMovieClick.InvokeAsync(@Movie.id))">
+        <img class="movie-img" src="@movieImageUrl" />
+        <h2 class="movie-title">@Movie.title</h2>
+    </a>
 </div>
 
 @code {
-    const string IMGPATH = "https://image.tmdb.org/t/p/w1280";
+    const string ImgPath = "https://image.tmdb.org/t/p/w1280";
 
-    //[Parameter]
-    //public string title { get; set; } = "Product detail";
+    [Parameter]
+    public EventCallback<int> OnMovieClick { get; set; }
 
-    //[Parameter]
-    //public string description { get; set; } = "description";
-
-    //[Parameter]
-    //public EventCallback<string> OnClick { get; set; }
-
-    private string MovieImageUrl => IMGPATH + this.Movie.poster_path;
+    private string movieImageUrl => ImgPath + this.Movie.poster_path;
 
     [Parameter]
     public MovieDetailModel Movie { get; set; }
