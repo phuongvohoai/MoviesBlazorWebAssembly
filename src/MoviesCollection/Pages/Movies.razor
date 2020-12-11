@@ -1,8 +1,10 @@
 ﻿@page "/movies"
 @using MoviesCollection.Models
+@using Microsoft.Extensions.Configuration
 
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
 
 
 <div class="movie-container">
@@ -21,17 +23,19 @@
 
 @code {
 
-    const string apiUrl = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=a2d7bda638c91a70ad69de2f79a5a2f3&page=1";
+    const string apiUrl = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key={0}&page=1";
     const string IMGPATH = "https://image.tmdb.org/t/p/w1280";
-    const string SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key=a2d7bda638c91a70ad69de2f79a5a2f3&query=";
+    const string SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key={0}&query=";
     // image.src = IMGPATH + element.poster_path;
 
     MovieResponseModel movies = null;
 
     protected override async Task OnInitializedAsync()
     {
+        var apiKey = Configuration["VideoApiKey"];
+        var url = string.Format(apiUrl, apiKey);
         movies =
-            await Http.GetFromJsonAsync<MovieResponseModel>(apiUrl);
+            await Http.GetFromJsonAsync<MovieResponseModel>(url);
     }
 
     private void MovieClickHandler(int videoId)

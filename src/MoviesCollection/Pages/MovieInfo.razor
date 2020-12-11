@@ -1,6 +1,9 @@
 ﻿@page "/movies/{id?}"
 @using MoviesCollection.Models
+@using Microsoft.Extensions.Configuration
 @inject HttpClient Http
+@inject IConfiguration Configuration
+
 @if (movie != null)
 {
     <h1>Movie name is @movie.title</h1>
@@ -16,8 +19,8 @@
     {
         if (!string.IsNullOrEmpty(this.Id))
         {
-
-            var url = $"https://api.themoviedb.org/3/movie/{this.Id}?api_key=a2d7bda638c91a70ad69de2f79a5a2f3&language=en-US";
+            var apiKey = Configuration["VideoApiKey"];
+            var url = $"https://api.themoviedb.org/3/movie/{this.Id}?api_key={apiKey}&language=en-US";
             movie = await Http.GetFromJsonAsync<MovieDetailResponseModel>(url);
         }
     }
