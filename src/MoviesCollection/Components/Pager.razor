@@ -1,0 +1,49 @@
+﻿@using MoviesCollection.Models
+
+@if (Result != null)
+{
+    <div class="row">
+        <div class="col-md-8 col-sm-8">
+            @if (Result.PageCount > 1)
+            {
+                <ul class="pagination pull-right">
+                    <li><button type="button" @onclick="(() => PageChanged.InvokeAsync(1))" class="btn">&laquo;</button></li>
+                    @for (var i = startIndex; i <= finishIndex; i++)
+                    {
+                        var currentIndex = i;
+                        @if (i == Result.CurrentPage)
+                        {
+                            <li><span class="btn btn-primary">@i</span></li>
+                        }
+                        else
+                        {
+                            <li><button type="button" @onclick="(() => PageChanged.InvokeAsync(currentIndex))" class="btn">@i</button></li>
+                        }
+                    }
+                    <li><button type="button" @onclick="(() => PageChanged.InvokeAsync(Result.PageCount))" class="btn">&raquo;</button></li>
+                </ul>
+            }
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public PagedResultBase Result { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+
+    private int startIndex { get; set; } = 0;
+    private int finishIndex { get; set; } = 0;
+
+
+    protected override Task OnParametersSetAsync()
+    {
+        startIndex = Math.Max(Result.CurrentPage - 5, 1);
+        finishIndex = Math.Min(Result.CurrentPage + 5, Result.PageCount);
+
+        return base.OnParametersSetAsync();
+    }
+}

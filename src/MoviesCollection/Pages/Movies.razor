@@ -1,6 +1,7 @@
 ﻿@page "/movies"
 @using MoviesCollection.Models
 @using Microsoft.Extensions.Configuration
+@using MoviesCollection.Helper
 
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
@@ -14,32 +15,50 @@
     }
     else
     {
-        @foreach (var movie in movies.results)
+        @foreach (var movie in movies.Results)
         {
             <MovieDetail @key="@movie.id" Movie="@movie" OnMovieClick="@MovieClickHandler" />
         }
+
+        <div class="paging-container">
+            <Pager Result="@movies" PageChanged="@PageChangedHandler" />
+        </div>
     }
 </div>
 
 @code {
 
-    const string apiUrl = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key={0}&page=1";
+    const string apiUrl = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key={0}&page={1}";
     const string IMGPATH = "https://image.tmdb.org/t/p/w1280";
     const string SEARCHAPI = "https://api.themoviedb.org/3/search/movie?&api_key={0}&query=";
     // image.src = IMGPATH + element.poster_path;
 
-    MovieResponseModel movies = null;
+    PagedResult<MovieDetailModel> movies = null;
+
 
     protected override async Task OnInitializedAsync()
     {
-        var apiKey = Configuration["VideoApiKey"];
-        var url = string.Format(apiUrl, apiKey);
-        movies =
-            await Http.GetFromJsonAsync<MovieResponseModel>(url);
+        movies = await this.FetchMoviesAsync(1);
     }
 
     private void MovieClickHandler(int videoId)
     {
         NavigationManager.NavigateTo($"/movies/{videoId}");
+    }
+
+    private async Task PageChangedHandler(int pageIndex)
+    {
+        // TBD
+        movies = await this.FetchMoviesAsync(pageIndex);
+        StateHasChanged();
+    }
+
+    private async Task<PagedResult<MovieDetailModel>> FetchMoviesAsync(int pageIndex = 1)
+    {
+        var apiKey = Configuration["VideoApiKey"];
+        var url = string.Format(apiUrl, apiKey, pageIndex);
+        var moviesResponseModel = await Http.GetFromJsonAsync<MovieResponseModel>(url);
+
+        return moviesResponseModel.ToPagedResult();
     }
 }
