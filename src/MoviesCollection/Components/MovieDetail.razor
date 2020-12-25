@@ -1,11 +1,13 @@
 ﻿@namespace MoviesCollection.Components
 @using MoviesCollection.Models
 
-<div class="movie-detail">
-    <a @onclick="@(() => OnMovieClick.InvokeAsync(@Movie.id))">
-        <img class="movie-img" src="@movieImageUrl" />
-        <h2 class="movie-title">@Movie.title</h2>
-    </a>
+<div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="@movieImageUrl" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title line-clamp">@Movie.title</h5>
+        <p class="card-text line-clamp">@Movie.overview</p>
+        <a class="btn btn-primary" @onclick=@(() => OnMovieClick.InvokeAsync(@Movie.id))>Go detail</a>
+    </div>
 </div>
 
 @code {
